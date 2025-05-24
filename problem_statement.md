@@ -1,76 +1,79 @@
-# Royal Guard Formation
+# Capybara Friends
 
 ## Problem Statement
 
-In the kingdom of Capy, the royal chess master is organizing a special guard formation on a standard 8×8 chessboard. Currently, there are already three pieces on the board: a **queen**, a **bishop**, and a **rook**, positioned such that none of them can capture any other.
+In a small zoo, there are capybaras placed on a rectangular grid of size **n × m**. Some cells already have capybaras, and you want to place exactly **one more capybara** on an empty cell.
 
-The chess master wants to place exactly **two additional knights** on the board to complete the royal guard formation. However, there's a special rule: the two new knights must be able to **protect each other** (i.e., each knight must be able to capture the other in one move), but neither of the knights should be able to capture any of the existing three pieces, nor should any existing piece be able to capture either of the new knights.
+However, capybaras are social animals and follow a simple friendship rule:
+- **Two capybaras are friends if they are in the same row OR the same column**
+- **A new capybara must have at least one friend among the existing capybaras**
 
-Your task is to find the number of ways to place these two knights on the board following these conditions.
-
-## Movement Rules Reminder
-
-- **Queen**: Can move any number of squares horizontally, vertically, or diagonally
-- **Bishop**: Can move any number of squares diagonally  
-- **Rook**: Can move any number of squares horizontally or vertically
-- **Knight**: Moves in an "L" shape: 2 squares in one direction and 1 square perpendicular to that
+Your task is to count how many empty cells can accommodate a new capybara such that it will have at least one friend.
 
 ## Input
 
-The first line contains the position of the queen on the board as a string of length 2 (e.g., "d4").
-The second line contains the position of the bishop on the board in the same format.
-The third line contains the position of the rook on the board in the same format.
+The first line contains two integers **n** and **m** (1 ≤ n, m ≤ 100) — the dimensions of the grid.
 
-Positions are given in standard chess notation: the first character is a lowercase letter from 'a' to 'h' (columns), and the second character is a digit from '1' to '8' (rows).
+The next **n** lines contain **m** characters each, where:
+- '.' represents an empty cell
+- 'C' represents a cell with a capybara
 
-It is guaranteed that all three initial pieces are on different squares and none can capture another.
+It is guaranteed that there is at least one capybara initially and at least one empty cell.
 
 ## Output
 
-Print a single integer representing the number of ways to place two knights such that:
-1. Both knights are on empty squares
-2. The two knights can capture each other (are a knight's move apart)
-3. Neither knight can capture any of the existing pieces
-4. None of the existing pieces can capture either knight
+Print a single integer — the number of empty cells where you can place a new capybara such that it will have at least one friend.
 
 ## Examples
 
 ### Example 1
+**Input:**
 ```
-Input:
-d4
-f6
-a1
+3 3
+C..
+...
+..C
+```
 
-Output:
-12
+**Output:**
+```
+4
 ```
 
 ### Example 2
+**Input:**
 ```
-Input:
-h8
-c3
-e1
-
-Output:
-8
+2 4
+C...
+....
 ```
 
-## Constraints
-
-- The board is always 8×8
-- All piece positions are valid and distinct
-- It is guaranteed that the initial three pieces cannot capture each other
-- Time limit: 2 seconds
-- Memory limit: 256 megabytes
+**Output:**
+```
+6
+```
 
 ## Explanation
 
-### Example 1:
-With queen at d4, bishop at f6, and rook at a1, we need to find pairs of squares where:
-- Two knights can be placed such that they attack each other
-- Neither knight is attacked by queen (d4), bishop (f6), or rook (a1)
-- Neither knight attacks any of the existing pieces
+In Example 1:
+- There are capybaras at (1,1) and (3,3)
+- A new capybara can be placed at:
+  - (1,2), (1,3) - same row as capybara at (1,1)
+  - (2,1) - same column as capybara at (1,1)
+  - (2,3) - same column as capybara at (3,3)
+  - (3,1), (3,2) - same row as capybara at (3,3)
+- Total: 6 valid positions
 
-The answer is 12 such valid pairs of positions.
+In Example 2:
+- There is a capybara at (1,1)
+- A new capybara can be placed at:
+  - (1,2), (1,3), (1,4) - same row as existing capybara
+  - (2,1) - same column as existing capybara
+- Total: 4 valid positions (not 6 as initially stated)
+
+## Constraints
+
+- 1 ≤ n, m ≤ 100
+- At least one capybara exists initially
+- At least one empty cell exists
+- Grid contains only '.' and 'C' characters
