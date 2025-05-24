@@ -73,7 +73,7 @@ In Example 2:
 
 ## Constraints
 
-- 1 ≤ n, m ≤ 100
+- 1 ≤ n, m ≤ 1000
 - At least one capybara exists initially
 - At least one empty cell exists
 - Grid contains only '.' and 'C' characters
