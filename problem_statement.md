@@ -37,7 +37,7 @@ C..
 
 **Output:**
 ```
-4
+6
 ```
 
 ### Example 2
@@ -50,7 +50,7 @@ C...
 
 **Output:**
 ```
-6
+4
 ```
 
 ## Explanation
