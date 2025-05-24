@@ -8,6 +8,7 @@ This repository contains a complete competitive programming problem titled **Cap
 - **generator/** — Test case generator code using `testlib.h`.
 - **solutions/** — One or more C++ solutions to the problem.
 - **editorial.md** — A detailed explanation and solution approach, including mathematical reasoning.
+- **Link of Polygon** - https://polygon.codeforces.com/p7Luc29/Lucifer_K/capybara-friends
 
 This problem involves placing a new capybara on a grid such that it has at least one friend (another capybara in the same row or column).
 
