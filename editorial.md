@@ -1,173 +1,185 @@
-Editorial: Capybara Placement Problem
-Problem Statement
-Given an n×m grid where some cells contain capybaras ('C') and others are empty ('.'), count how many empty cells can accommodate a new capybara such that it shares at least one row or column with an existing capybara.
 
-Mathematical Formulation
+# 🐾 Editorial: Capybara Friends
+
+## 🧩 Problem Summary
+
+You are given a 2D grid of size \( n \times m \), where each cell is either:
+- `'C'` → a capybara,
+- `'.'` → an empty cell.
+
+You may place **exactly one** new capybara on any empty cell **if and only if** it has **at least one friend**.  
+A *friend* is defined as **another capybara in the same row or column**.
+
+Your goal is to count how many such **valid empty cells** exist.
+
+---
+
+## 🧠 Observations & Definitions
+
 Let:
+- Grid \( G \in \{\text{'.'}, \text{'C'}\}^{n \times m} \)
+- Cell \( G[i][j] \): row \( i \in [1, n] \), column \( j \in [1, m] \)
 
-$G$ be the n×m grid where $G_{ij} \in {'.', 'C'}$
+Define:
+- A row \( i \) is **active** if \( \exists \, j \text{ such that } G[i][j] = 'C' \)
+- A column \( j \) is **active** if \( \exists \, i \text{ such that } G[i][j] = 'C' \)
 
-$R = {i | \exists j \text{ s.t. } G_{ij} = 'C'}$ (rows with capybaras)
+A cell \( G[i][j] = '.' \) is a **valid placement** if:
+- \( i \) is an active row **or** \( j \) is an active column.
 
-$C = {j | \exists i \text{ s.t. } G_{ij} = 'C'}$ (columns with capybaras)
+---
 
-The solution is the cardinality of the set:
-S
-=
-{
-(
-i
-,
-j
-)
-∣
-G
-i
-j
-=
-′
-.
-′
- and 
-(
-i
-∈
-R
- or 
-j
-∈
-C
-)
-}
-S={(i,j)∣G 
-ij
-​
- = 
-′
- . 
-′
-  and (i∈R or j∈C)}
+## 🧮 Mathematical Formulation
 
-Solution Approach
-Key Insight
-A new capybara at position (i,j) will have at least one friend if:
+Let \( A \) be the set of all valid placements:
+\[
+A = \{(i, j) \mid G[i][j] = '.' \text{ and } (R[i] = 1 \lor C[j] = 1)\}
+\]
+Where:
+- \( R[i] = 1 \iff \exists \, j : G[i][j] = 'C' \)
+- \( C[j] = 1 \iff \exists \, i : G[i][j] = 'C' \)
 
-There exists another capybara in row i, OR
+We want to compute:
+\[
+|A| = \text{Total number of such valid } (i, j)
+\]
 
-There exists another capybara in column j
+---
 
-Optimal Algorithm
-Preprocessing:
+## ⚙️ Step-by-Step Algorithm
 
-Identify all rows containing at least one capybara ($R$)
+### Step 1: Mark Active Rows and Columns
+- Traverse the entire grid.
+- For each capybara cell \( G[i][j] = 'C' \), mark:
+  - `hasRow[i] = true`
+  - `hasCol[j] = true`
 
-Identify all columns containing at least one capybara ($C$)
+### Step 2: Count Valid Cells
+- For each cell \( G[i][j] = '.' \), if `hasRow[i]` or `hasCol[j]` is `true`, increment answer.
 
-Counting Valid Positions:
-For each empty cell (i,j):
+---
 
-If i ∈ R or j ∈ C → valid position
+## 💻 Pseudocode
 
-Else → invalid position
+```cpp
+bool hasRow[n] = {false};
+bool hasCol[m] = {false};
 
-Complexity Analysis
-Time Complexity: $O(n \times m)$
+// Step 1: Preprocessing
+for (int i = 0; i < n; ++i)
+  for (int j = 0; j < m; ++j)
+    if (grid[i][j] == 'C')
+      hasRow[i] = hasCol[j] = true;
 
-One pass to identify R and C
+int count = 0;
+// Step 2: Count valid placements
+for (int i = 0; i < n; ++i)
+  for (int j = 0; j < m; ++j)
+    if (grid[i][j] == '.' && (hasRow[i] || hasCol[j]))
+      count++;
+```
 
-One pass to count valid positions
+---
 
-Space Complexity: $O(n + m)$
+## ⏱ Complexity Analysis
 
-Storage for row and column markers
+- **Time Complexity**:  
+  - Step 1: \( O(n \cdot m) \)  
+  - Step 2: \( O(n \cdot m) \)  
+  ➤ **Total:** \( O(n \cdot m) \)
 
-Solution Code
-cpp
-#include <bits/stdc++.h>
-using namespace std;
+- **Space Complexity**:  
+  - \( O(n + m) \) for the `hasRow` and `hasCol` arrays
 
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-    
-    int n, m;
-    cin >> n >> m;
-    
-    vector<string> grid(n);
-    vector<bool> row_has_c(n, false);
-    vector<bool> col_has_c(m, false);
-    
-    // First pass: Identify rows and columns with capybaras
-    for (int i = 0; i < n; i++) {
-        cin >> grid[i];
-        for (int j = 0; j < m; j++) {
-            if (grid[i][j] == 'C') {
-                row_has_c[i] = true;
-                col_has_c[j] = true;
-            }
-        }
-    }
-    
-    int count = 0;
-    
-    // Second pass: Count valid positions
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < m; j++) {
-            if (grid[i][j] == '.' && (row_has_c[i] || col_has_c[j])) {
-                count++;
-            }
-        }
-    }
-    
-    cout << count << "\n";
-    
-    return 0;
-}
-Proof of Correctness
-Lemma 1: The algorithm correctly identifies all rows and columns containing capybaras.
-Proof: By examining every cell exactly once during the first pass, we accurately mark all rows and columns that contain at least one 'C'.
+---
 
-Lemma 2: A position (i,j) is counted if and only if it satisfies the friendship condition.
-Proof:
+## ✅ Correctness Proof
 
-(⇒) If counted, then either row i or column j has a capybara by construction.
+### ▶ Necessity
+If a cell \( (i, j) \) is valid, then **some capybara** must exist in row \( i \) or column \( j \).  
+So either `hasRow[i] = true` or `hasCol[j] = true`.  
+**→ Necessary condition holds.**
 
-(⇐) If (i,j) has a capybara in its row or column, the algorithm will detect this through row_has_c[i] or col_has_c[j].
+### ▶ Sufficiency
+If `hasRow[i] = true` or `hasCol[j] = true`, then a capybara is reachable by the new one via row or column.  
+**→ Sufficient condition holds.**
 
-Theorem: The algorithm correctly solves the problem in O(n×m) time.
-Proof: Follows directly from Lemmas 1 and 2, with the complexity analysis showing optimal time and space usage.
+Hence, the condition is **necessary and sufficient**. ✅
 
-Example Walkthrough
-Input:
+---
 
+## 🧪 Example Walkthrough
+
+### 🔸 Input:
+```
 3 3
 C..
 ...
 ..C
-Processing:
+```
 
-Identify:
+Visual grid:
 
-Rows with capybaras: R = {0, 2}
+|   | 0 | 1 | 2 |
+|---|---|---|---|
+| 0 | C | . | . |
+| 1 | . | . | . |
+| 2 | . | . | C |
 
-Columns with capybaras: C = {0, 2}
+### 🔸 Step 1: Mark Active Rows and Columns
+- Capybaras at (0,0) and (2,2)
+- Active rows: `hasRow[0] = true`, `hasRow[2] = true`
+- Active cols: `hasCol[0] = true`, `hasCol[2] = true`
 
-Count valid empty cells:
+### 🔸 Step 2: Check Each Cell
 
-(0,1), (0,2) - same row as (0,0)
+We now check each cell \( G[i][j] = '.' \) and whether it lies in any active row/column:
 
-(1,0), (1,2) - same columns as existing capybaras
+- Row 0:
+  - (0,1): `hasRow[0] = true` → ✅
+  - (0,2): `hasRow[0] = true` → ✅
 
-(2,0), (2,1) - same row as (2,2)
+- Row 1:
+  - (1,0): `hasCol[0] = true` → ✅
+  - (1,1): `hasRow[1] = false`, `hasCol[1] = false` → ❌
+  - (1,2): `hasCol[2] = true` → ✅
 
-Output: 6
+- Row 2:
+  - (2,0): `hasRow[2] = true` → ✅
+  - (2,1): `hasRow[2] = true` → ✅
 
-Optimizations
-Early Termination: If all rows or all columns contain capybaras, all empty cells are valid.
+### 🔸 Total Valid Placements:  
+Count of ✅: **6**
 
-Bitmask Representation: For very large n,m, rows/columns could be represented as bitsets.
+### 🔸 Final Answer: `6`
 
-Parallel Processing: The counting pass can be parallelized since cell checks are independent.
+---
 
-Conclusion
-This problem demonstrates how careful preprocessing can lead to an optimal solution. By first identifying the critical rows and columns, we reduce the subsequent checking to simple boolean operations, resulting in an efficient O(n×m) algorithm that is both easy to understand and implement.
+## 🧊 Edge Cases
+
+- All empty grid: answer is `0` (no active rows/cols)
+- Full capybara grid: answer is `0` (no empty cells)
+- Only one capybara: row and column it’s in are active — other empty cells may be valid
+- Only one row or one column: answer can still be valid if there's at least one 'C'
+
+---
+
+## 🪄 Tips & Tricks
+
+- Don't re-scan rows/columns for each query; use preprocessed flags (`hasRow`/`hasCol`).
+- This is a classic example of **fast filtering using auxiliary arrays**.
+
+---
+
+## 🧠 Final Thoughts
+
+This problem is a nice exercise in:
+- Translating logical conditions to simple boolean tracking
+- Using preprocessing for fast decision-making
+- Verifying conditions with both necessity and sufficiency logic
+
+It also introduces foundational ideas in **grid manipulation**, **friendship networks**, and **2D condition checks** — useful patterns in competitive programming.
+
+---
+
+## 🔚 The End
